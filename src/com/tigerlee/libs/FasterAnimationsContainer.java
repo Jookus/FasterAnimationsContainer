@@ -4,6 +4,7 @@ package com.tigerlee.libs;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 
 import java.lang.ref.SoftReference;
@@ -197,7 +198,7 @@ public class FasterAnimationsContainer{
 
             if (imageView.isShown()) {
                 AnimationFrame frame = getNext();
-                GetImageDrawableTask task = new GetImageDrawableTask(imageView);
+                GetImageDrawableTask task = new GetImageDrawableTask(imageView, imageView.getContext());
                 task.execute(frame.getResourceId());
                 // TODO postDelayed after onPostExecute
                 mHandler.postDelayed(this, frame.getDuration());
@@ -208,14 +209,16 @@ public class FasterAnimationsContainer{
     private class GetImageDrawableTask extends AsyncTask<Integer, Void, Drawable>{
 
         private ImageView mImageView;
+        private Context mContext;
 
-        public GetImageDrawableTask(ImageView imageView) {
+        public GetImageDrawableTask(ImageView imageView, Context context) {
             mImageView = imageView;
+            mContext = context;
         }
 
         @Override
         protected Drawable doInBackground(Integer... params) {
-            return mImageView.getContext().getResources().getDrawable(params[0]);
+            return ContextCompat.getDrawable(mContext, params[0]);
         }
 
         @Override
